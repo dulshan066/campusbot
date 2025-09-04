@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import random
+import os
 
 app = Flask(__name__)
 
@@ -13,34 +14,26 @@ except Exception as e:
     faq_data = {}
 
 def get_response(user_input):
-    """
-    Get bot response and buttons based on user input.
-    Uses keywords matching and returns random response for variety.
-    """
     user_input = user_input.lower()
     for intent, data in faq_data.items():
         for keyword in data.get("keywords", []):
             if keyword in user_input:
-                # Get random response
                 response_list = data.get("responses", [])
                 response = random.choice(response_list) if response_list else "Sorry, no response found."
-                # Get buttons
                 buttons = data.get("buttons", [])
                 return response, buttons
-    # Default response if no keyword matched
     return "❓ Sorry, I didn’t understand that. Try asking about courses, timetable, lecturers, or library.", []
 
 @app.route("/")
 def index():
-    """Render the chatbot UI"""
     return render_template("index.html")
 
 @app.route("/get", methods=["POST"])
 def chatbot_response():
-    """Return chatbot response and buttons as JSON"""
     user_message = request.json.get("message", "")
     response, buttons = get_response(user_message)
     return jsonify({"response": response, "buttons": buttons})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
