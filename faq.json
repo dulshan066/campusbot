@@ -1,0 +1,51 @@
+{
+  "greetings": {
+    "keywords": ["hi", "hello", "hey"],
+    "responses": [
+      "Hello! 👋 How can I help you today?",
+      "Hi there! Need campus info?",
+      "Hey! What do you want to know about the campus?"
+    ],
+    "buttons": ["Courses", "Timetable", "Lecturers", "Library"]
+  },
+  "courses": {
+    "keywords": ["course", "subject", "modules"],
+    "responses": [
+      "Our campus offers Computing, Business, and Engineering programs.",
+      "You can view all courses on the Student Portal."
+    ],
+    "buttons": ["Timetable", "Lecturers"]
+  },
+  "timetable": {
+    "keywords": ["timetable", "schedule", "class time"],
+    "responses": [
+      "📅 Timetables are available on the Student Portal. Here’s the link: <a href='https://campusportal.com/timetable' target='_blank'>Timetable</a>",
+      "Check the portal for updated class schedules."
+    ],
+    "buttons": ["Courses", "Lecturers"]
+  },
+  "lecturers": {
+    "keywords": ["lecturer", "professor", "teacher"],
+    "responses": [
+      "👨‍🏫 Lecturer details are on the campus website under 'Staff Directory'.",
+      "You can contact your lecturers via their emails listed on the portal."
+    ],
+    "buttons": ["Courses", "Timetable"]
+  },
+  "library": {
+    "keywords": ["library", "books", "open hours"],
+    "responses": [
+      "📚 The library is open Mon-Fri from 8 AM to 6 PM.",
+      "You can check out books and access digital resources online."
+    ],
+    "buttons": ["Timetable", "Courses"]
+  },
+  "goodbye": {
+    "keywords": ["bye", "thanks", "thank you"],
+    "responses": [
+      "You’re welcome! Goodbye 👋",
+      "Glad I could help! See you soon!"
+    ],
+    "buttons": []
+  }
+}

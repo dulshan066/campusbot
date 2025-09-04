@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Campus Helper Bot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Optional: smooth scrolling for chat box */
+    #chat-box {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-2">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg flex flex-col h-full sm:h-[600px]">
+    <h2 class="text-xl font-bold text-center text-blue-600 py-3 border-b">🤖 Campus Helper Bot</h2>
+
+    <!-- Chat window -->
+    <div id="chat-box" class="flex-1 overflow-y-auto p-4 bg-gray-50"></div>
+
+    <!-- Quick reply buttons -->
+    <div id="button-container" class="flex flex-wrap gap-2 p-2 border-t bg-gray-100"></div>
+
+    <!-- Input box -->
+    <div class="flex gap-2 p-2 border-t bg-gray-100">
+      <input id="user-input" type="text" placeholder="Type your question..." class="flex-1 border rounded-lg p-2 focus:outline-blue-500">
+      <button id="send-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const buttonContainer = document.getElementById("button-container");
+
+    function addMessage(sender, message) {
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add(
+        "mb-2",
+        "p-2",
+        "rounded-xl",
+        "max-w-xs",
+        "break-words"
+      );
+      if (sender === "You") {
+        msgDiv.classList.add("ml-auto", "bg-blue-600", "text-white");
+      } else {
+        msgDiv.classList.add("mr-auto", "bg-gray-200");
+      }
+      msgDiv.innerHTML = message;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function displayButtons(buttons) {
+      buttonContainer.innerHTML = "";
+      buttons.forEach(btnText => {
+        const btn = document.createElement("button");
+        btn.innerText = btnText;
+        btn.className = "bg-gray-300 px-3 py-1 rounded-lg hover:bg-gray-400 text-sm";
+        btn.addEventListener("click", () => sendMessage(btnText));
+        buttonContainer.appendChild(btn);
+      });
+    }
+
+    function sendMessage(message) {
+      addMessage("You", message);
+      userInput.value = "";
+
+      // Typing indicator
+      const typingDiv = document.createElement("div");
+      typingDiv.innerText = "Bot is typing...";
+      typingDiv.className = "mb-2 italic text-gray-500";
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      fetch("/get", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        typingDiv.remove();
+        addMessage("Bot", data.response);
+        displayButtons(data.buttons);
+      })
+      .catch(err => {
+        typingDiv.remove();
+        addMessage("Bot", "⚠️ Sorry, something went wrong. Try again.");
+        console.error(err);
+      });
+    }
+
+    // Event listeners
+    sendBtn.addEventListener("click", () => {
+      const message = userInput.value.trim();
+      if (message) sendMessage(message);
+    });
+
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+
+    // Load initial quick reply buttons
+    displayButtons(["Courses", "Timetable", "Lecturers", "Library"]);
+  </script>
+</body>
+</html>
